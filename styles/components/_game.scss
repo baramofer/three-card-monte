@@ -1,0 +1,29 @@
+.game-container{
+    max-width: 80%;
+    margin: 2% 0;
+    padding: 3%;
+    background-color: #2b364d54;
+    border-radius: 6px;
+    .cards-container{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+    .game-btn{
+        font-size: 0.8rem;
+        font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        cursor: pointer;
+        border-radius: 4px;
+        border: 0;
+        min-width: 100px;
+        padding: 4px 20px 5px;
+        margin-top: 15px;
+        background-color: #0d131db0;
+        color: rgba(255, 255, 255, 0.767);
+        transition: all 0.2s;
+        &:hover{
+            background-color: #3a081d88;
+            color: #ffffff;
+        }
+    }
+}
