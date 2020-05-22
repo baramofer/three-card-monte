@@ -1,11 +1,16 @@
 <template>
   <section class="game-container">
-    <Msg v-if="msg" :msg="msg"/>
+    <Msg v-if="msg" :msg="msg" />
     <div class="round-timer-container">
       <Timer :isTimerOn="disabledCardsClick" />
       <Round :round="round" />
     </div>
-    <CardList :cards="cards" :revealCards="revealCards" :action="action" :disabledCardsClick="disabledCardsClick"/>
+    <CardList
+      :cards="cards"
+      :revealCards="revealCards"
+      :action="action"
+      :disabledCardsClick="disabledCardsClick"
+    />
     <button class="game-btn" @click="createGame" :disabled="action">{{newGameBtn}}</button>
   </section>
 </template>
@@ -13,7 +18,6 @@
 <script>
 import Timer from "~/components/Timer.vue";
 import Round from "~/components/Round.vue";
-// import Card from "~/components/Card.vue";
 import Msg from "~/components/Msg.vue";
 import CardList from "~/components/CardList.vue";
 import GameSerivce from "../services/GameService";
@@ -28,11 +32,10 @@ export default {
       round: 1,
       action: false,
       disabledCardsClick: true,
-      msg:null
+      msg: null
     };
   },
   components: {
-    // Card,
     Timer,
     Round,
     Msg,
@@ -46,12 +49,9 @@ export default {
   methods: {
     gameOver() {
       this.action = false;
-      console.log('game over');
-      this.msg = 'Game Over, play again?'
+      this.msg = "Game Over, play again?";
     },
     async playRound(cardIdx) {
-      console.log(cardIdx);
-      
       this.disabledCardsClick = true;
       const res = await GameSerivce.playRound(cardIdx, this.round);
       this.cards = Object.values(res.cards)[0];
@@ -69,7 +69,7 @@ export default {
     },
     async createGame() {
       try {
-        this.msg = null
+        this.msg = null;
         this.gameId = await GameSerivce.createGame();
         this.action = true;
         this.revealCards = false;
@@ -83,7 +83,7 @@ export default {
   },
   created() {
     this.$nuxt.$on("timer-finish", () => this.gameOver());
-    this.$nuxt.$on("card-clicked", (cardIdx) => this.playRound(cardIdx));
+    this.$nuxt.$on("card-clicked", cardIdx => this.playRound(cardIdx));
   }
 };
 </script>
