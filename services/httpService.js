@@ -3,7 +3,7 @@ import Axios from 'axios';
 const BASE_URL = 'https://mapi.xchangepro.net/tests/tcm/ofer_baram/'
 
 var axios = Axios.create({
-    withCredentials: true,
+    // withCredentials: true,
     headers: {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',

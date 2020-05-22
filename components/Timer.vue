@@ -28,6 +28,9 @@ export default {
             this.$emit('timerFinish')
         }
     },
+    mounted(){
+        
+    },
     destroyed(){
         clearInterval(this.timerInterval)
     }

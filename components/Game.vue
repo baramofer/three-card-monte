@@ -1,13 +1,14 @@
 <template>
   <section class="game-container">
     <Timer @timerFinish="gameOver" />
-    <div class="cards-container">
 
-      <Card :revealCard="revealCard"/>
-      <Card />
-      <Card />
+    <div class="cards-container">
+      <Card v-for="(card, idx) in cards"
+                  :key="idx"
+                  :type="card.type"
+                  :revealCard="revealCard" />
     </div>
-    <button class="game-btn" @click="startGame">{{newGameBtn}}</button>
+    <button class="game-btn" @click="createGame">{{newGameBtn}}</button>
     <button class="game-btn" @click="revealCard=!revealCard">flip</button>
   </section>
 </template>
@@ -16,34 +17,47 @@
 import Timer from "~/components/Timer.vue";
 import Card from "~/components/Card.vue";
 import HttpService from "../services/HttpService";
-import axios from 'axios'
+import UtilsService from "../services/UtilsService";
 
 export default {
-  data(){
-    return{
-      gameId:null,
-      revealCard:false
-    }
+  data() {
+    return {
+      gameId: null,
+      revealCard: false,
+      cards: [1,2,3],
+      round: 1
+    };
   },
   components: {
     Card,
     Timer
   },
-  computed:{
-    newGameBtn(){
-      return this.gameId? 'Restart new game' : 'Start game'
+  computed: {
+    newGameBtn() {
+      return this.gameId ? "Restart new game" : "Start game";
     }
   },
   methods: {
     gameOver() {
       console.log("gameOver");
     },
-    async startGame(){
-        this.gameId = await axios.post('https://mapi.xchangepro.net/tests/tcm/ofer_baram/', {"data":{"action":"start"}}, { useCredentails: true })
-        console.log(this.game);
-        this.gameId = await HttpService.post({"data":{"action":"start"}})
-        console.log(this.game);
+    async playRound(cardNum) {
+      this.cards = await HttpService.post({
+        data: {
+          action: "play",
+          game_id: this.gameId,
+          round: this.round,
+          card: this.cardNum
+        }
+      });
+      console.log(this.cards);
+    },
+    async createGame() {
+      const createGameApi = await HttpService.post({ data: { action: "start" } });
+      this.gameId = createGameApi.data.game_id;
+      if(this.gameId) playRound()
+      console.log(this.gameId, 'game has started');
     }
-  },
+  }
 };
 </script>
