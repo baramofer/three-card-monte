@@ -1,8 +1,8 @@
 <template>
   <div class="card-container" @click="cardClicked">
-    <div class="flip-card" :class="{revealCard:revealCard}">
-      <div class="flip-card-inner" :class="{revealCard:revealCard}">
-        <div class="flip-card-front" :class="{revealCard:revealCard}">
+    <div class="flip-card" :class="{revealCards}">
+      <div class="flip-card-inner" :class="{revealCards}">
+        <div class="flip-card-front" :class="{revealCards}">
           <img src="../assets/card.jpg" />
         </div>
         <div class="flip-card-back">{{card}}</div>
@@ -13,11 +13,12 @@
 
 <script>
 export default {
-  props: { revealCard: Boolean, card: String },
+  props: { revealCards: Boolean, card: String },
   methods: {
     cardClicked() {
       $nuxt.$emit("toggle-timer");
-      this.$emit("cardClicked", this.$vnode.key + 1);
+      $nuxt.$emit("card-clicked", this.$vnode.key + 1);
+      // this.$emit("cardClicked", this.$vnode.key + 1);
     }
   }
 };

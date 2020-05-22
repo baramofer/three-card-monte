@@ -5,16 +5,7 @@
       <Timer :isTimerOn="disabledCardsClick" />
       <Round :round="round" />
     </div>
-    <!-- <CardList /> -->
-    <div class="cards-container" :class="{opacity:!action, disabledCardsClick}">
-      <Card
-        v-for="(card, idx) in cards"
-        :key="idx"
-        :card="card"
-        :revealCard="revealCards"
-        @cardClicked="playRound"
-      />
-    </div>
+    <CardList :cards="cards" :revealCards="revealCards" :action="action" :disabledCardsClick="disabledCardsClick"/>
     <button class="game-btn" @click="createGame" :disabled="action">{{newGameBtn}}</button>
   </section>
 </template>
@@ -22,8 +13,9 @@
 <script>
 import Timer from "~/components/Timer.vue";
 import Round from "~/components/Round.vue";
-import Card from "~/components/Card.vue";
+// import Card from "~/components/Card.vue";
 import Msg from "~/components/Msg.vue";
+import CardList from "~/components/CardList.vue";
 import GameSerivce from "../services/GameService";
 import UtilsService from "../services/UtilsService";
 
@@ -40,10 +32,11 @@ export default {
     };
   },
   components: {
-    Card,
+    // Card,
     Timer,
     Round,
-    Msg
+    Msg,
+    CardList
   },
   computed: {
     newGameBtn() {
@@ -57,6 +50,8 @@ export default {
       this.msg = 'Game Over, play again?'
     },
     async playRound(cardIdx) {
+      console.log(cardIdx);
+      
       this.disabledCardsClick = true;
       const res = await GameSerivce.playRound(cardIdx, this.round);
       this.cards = Object.values(res.cards)[0];
@@ -88,6 +83,7 @@ export default {
   },
   created() {
     this.$nuxt.$on("timer-finish", () => this.gameOver());
+    this.$nuxt.$on("card-clicked", (cardIdx) => this.playRound(cardIdx));
   }
 };
 </script>
