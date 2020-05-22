@@ -1,63 +1,93 @@
 <template>
   <section class="game-container">
-    <Timer @timerFinish="gameOver" />
-
-    <div class="cards-container">
-      <Card v-for="(card, idx) in cards"
-                  :key="idx"
-                  :type="card.type"
-                  :revealCard="revealCard" />
+    <Msg v-if="msg" :msg="msg"/>
+    <div class="round-timer-container">
+      <Timer :isTimerOn="disabledCardsClick" />
+      <Round :round="round" />
     </div>
-    <button class="game-btn" @click="createGame">{{newGameBtn}}</button>
-    <button class="game-btn" @click="revealCard=!revealCard">flip</button>
+    <!-- <CardList /> -->
+    <div class="cards-container" :class="{opacity:!action, disabledCardsClick}">
+      <Card
+        v-for="(card, idx) in cards"
+        :key="idx"
+        :card="card"
+        :revealCard="revealCards"
+        @cardClicked="playRound"
+      />
+    </div>
+    <button class="game-btn" @click="createGame" :disabled="action">{{newGameBtn}}</button>
   </section>
 </template>
 
 <script>
 import Timer from "~/components/Timer.vue";
+import Round from "~/components/Round.vue";
 import Card from "~/components/Card.vue";
-import HttpService from "../services/HttpService";
+import Msg from "~/components/Msg.vue";
+import GameSerivce from "../services/GameService";
 import UtilsService from "../services/UtilsService";
 
 export default {
   data() {
     return {
       gameId: null,
-      revealCard: false,
-      cards: [1,2,3],
-      round: 1
+      revealCards: false,
+      cards: ["C", "C", "C"],
+      round: 1,
+      action: false,
+      disabledCardsClick: true,
+      msg:null
     };
   },
   components: {
     Card,
-    Timer
+    Timer,
+    Round,
+    Msg
   },
   computed: {
     newGameBtn() {
-      return this.gameId ? "Restart new game" : "Start game";
+      return this.round > 1 && !this.action ? "Restart new game" : "Start game";
     }
   },
   methods: {
     gameOver() {
-      console.log("gameOver");
+      this.action = false;
+      console.log('game over');
+      this.msg = 'Game Over, play again?'
     },
-    async playRound(cardNum) {
-      this.cards = await HttpService.post({
-        data: {
-          action: "play",
-          game_id: this.gameId,
-          round: this.round,
-          card: this.cardNum
-        }
-      });
-      console.log(this.cards);
+    async playRound(cardIdx) {
+      this.disabledCardsClick = true;
+      const res = await GameSerivce.playRound(cardIdx, this.round);
+      this.cards = Object.values(res.cards)[0];
+      const status = Object.values(res.status)[0];
+      this.revealCards = !this.revealCards;
+      if (status === "l") this.gameOver();
+      else {
+        setTimeout(() => {
+          this.disabledCardsClick = false;
+          this.round++;
+          this.revealCards = !this.revealCards;
+          $nuxt.$emit("reset-timer");
+        }, 2000);
+      }
     },
     async createGame() {
-      const createGameApi = await HttpService.post({ data: { action: "start" } });
-      this.gameId = createGameApi.data.game_id;
-      if(this.gameId) playRound()
-      console.log(this.gameId, 'game has started');
+      try {
+        this.msg = null
+        this.gameId = await GameSerivce.createGame();
+        this.action = true;
+        this.revealCards = false;
+        this.round = 1;
+        this.disabledCardsClick = false;
+        $nuxt.$emit("reset-timer");
+      } catch (e) {
+        console.log(e);
+      }
     }
+  },
+  created() {
+    this.$nuxt.$on("timer-finish", () => this.gameOver());
   }
 };
 </script>

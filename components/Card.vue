@@ -5,7 +5,7 @@
         <div class="flip-card-front" :class="{revealCard:revealCard}">
           <img src="../assets/card.jpg" />
         </div>
-        <div class="flip-card-back">{{type}}</div>
+        <div class="flip-card-back">{{card}}</div>
       </div>
     </div>
   </div>
@@ -13,15 +13,11 @@
 
 <script>
 export default {
-  props:{'revealCard': Boolean, 'type':String},
-  data(){
-    return{
-    }
-  },
+  props: { revealCard: Boolean, card: String },
   methods: {
     cardClicked() {
-      console.log(this.type);
-      
+      $nuxt.$emit("toggle-timer");
+      this.$emit("cardClicked", this.$vnode.key + 1);
     }
   }
 };

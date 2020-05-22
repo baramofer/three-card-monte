@@ -13,7 +13,7 @@ import Game from "~/components/Game.vue";
 
 export default {
   components: {
-    Game,
-  },
+    Game
+  }
 };
 </script>

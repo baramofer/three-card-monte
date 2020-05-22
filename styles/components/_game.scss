@@ -2,12 +2,26 @@
     max-width: 80%;
     margin: 2% 0;
     padding: 3%;
-    background-color: #2b364d54;
     border-radius: 6px;
+    border: 3px solid rgba(43,54,77,0.22941);
     .cards-container{
         width: 100%;
         display: flex;
         justify-content: space-between;
+    }
+    .round-timer-container{
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        width: 100%;
+        border-radius: 5px;
+        padding: 10px;
+        border: 3px solid rgba(17, 17, 17, 0.086);
+        img{
+            height: 20px;
+            filter: brightness(0) invert(0.2);
+            opacity: 0.7;
+        }
     }
     .game-btn{
         font-size: 0.8rem;
@@ -17,13 +31,18 @@
         border: 0;
         min-width: 100px;
         padding: 4px 20px 5px;
-        margin-top: 15px;
         background-color: #0d131db0;
-        color: rgba(255, 255, 255, 0.767);
+        color: rgb(255, 255, 255);
         transition: all 0.2s;
         &:hover{
             background-color: #3a081d88;
             color: #ffffff;
         }
+    }
+    .disabledCardsClick{
+        pointer-events: none;
+    }
+    .opacity{
+        opacity: 0.7;
     }
 }
